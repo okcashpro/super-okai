@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5-beta] - 2025-01-22
+
+### Added
+- Chat length modes for personas
+  - Added 'short', 'normal', and 'long' response modes
+  - Implemented length adjustment in persona formatter
+  - Updated all personas with length configuration
+  - Added response length guidance in system prompts
+
+### Changed
+- Enhanced persona response formatting system
+- Updated persona type definitions to include chat length
+- Improved response length consistency across personas
+
 ## [1.0.4-beta] - 2025-01-21
 
 ### Added

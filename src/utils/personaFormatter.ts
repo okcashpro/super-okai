@@ -39,41 +39,62 @@ const personaStyles: Record<string, PersonaStyle> = {
   }
 };
 
+function adjustResponseLength(content: string, chatLength: string): string {
+  const sentences = content.match(/[^.!?]+[.!?]+/g) || [];
+  
+  switch (chatLength) {
+    case 'short':
+      // Keep only first 1-2 sentences
+      return sentences.slice(0, 2).join(' ');
+    case 'long':
+      // Add more detail and examples
+      return content.replace(/\. /g, '. For example, ').replace(/\? /g, '? To elaborate, ');
+    default:
+      return content;
+  }
+}
+
 export function formatPersonaResponse(content: string, persona: AIPersona): string {
-  const style = personaStyles[persona.name.toLowerCase()];
-  if (!style) return content;
+  try {
+    // First adjust the length based on persona's chatLength setting
+    let formattedContent = adjustResponseLength(content, persona.chatLength || 'normal');
 
-  let formattedContent = content;
+    const style = personaStyles[persona.name.toLowerCase()];
+    if (!style) return formattedContent;
 
-  // Apply removals
-  style.removals.forEach(pattern => {
-    formattedContent = formattedContent.replace(pattern, '');
-  });
+    // Apply removals
+    style.removals.forEach(pattern => {
+      formattedContent = formattedContent.replace(pattern, '');
+    });
 
-  // Apply custom formatters
-  style.formatters.forEach(formatter => {
-    formattedContent = formatter(formattedContent);
-  });
+    // Apply custom formatters
+    style.formatters.forEach(formatter => {
+      formattedContent = formatter(formattedContent);
+    });
 
-  // Add emoticons for personas that use them
-  if (style.emoticons && !style.emoticons.some(emote => formattedContent.includes(emote))) {
-    const randomEmote = style.emoticons[Math.floor(Math.random() * style.emoticons.length)];
-    formattedContent = `${formattedContent} ${randomEmote}`;
-  }
-
-  // Add expressions
-  if (!style.expressions.some(expr => formattedContent.toLowerCase().includes(expr))) {
-    if (Math.random() < 0.3) {
-      const randomExpr = style.expressions[Math.floor(Math.random() * style.expressions.length)];
-      formattedContent = `${randomExpr}, ${formattedContent}`;
+    // Add emoticons for personas that use them
+    if (style.emoticons && !style.emoticons.some(emote => formattedContent.includes(emote))) {
+      const randomEmote = style.emoticons[Math.floor(Math.random() * style.emoticons.length)];
+      formattedContent = `${formattedContent} ${randomEmote}`;
     }
-  }
 
-  // Ensure proper ending
-  if (!style.endPhrases.some(phrase => formattedContent.trim().endsWith(phrase))) {
-    const randomEndPhrase = style.endPhrases[Math.floor(Math.random() * style.endPhrases.length)];
-    formattedContent = `${formattedContent.trim()}${randomEndPhrase}`;
-  }
+    // Add expressions
+    if (!style.expressions.some(expr => formattedContent.toLowerCase().includes(expr))) {
+      if (Math.random() < 0.3) {
+        const randomExpr = style.expressions[Math.floor(Math.random() * style.expressions.length)];
+        formattedContent = `${randomExpr}, ${formattedContent}`;
+      }
+    }
 
-  return formattedContent;
+    // Ensure proper ending
+    if (!style.endPhrases.some(phrase => formattedContent.trim().endsWith(phrase))) {
+      const randomEndPhrase = style.endPhrases[Math.floor(Math.random() * style.endPhrases.length)];
+      formattedContent = `${formattedContent.trim()}${randomEndPhrase}`;
+    }
+
+    return formattedContent;
+  } catch (error) {
+    console.error('Error formatting persona response:', error);
+    return content;
+  }
 }

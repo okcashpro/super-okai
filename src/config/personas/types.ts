@@ -1,11 +1,14 @@
+export type ChatLength = 'short' | 'normal' | 'long';
+
 export interface AIPersona {
   name: string;
   description: string;
   systemPrompt: string;
-  knowledgeBases?: string[]; // Array of knowledge base names to use
-  customKnowledge?: string[]; // Additional custom knowledge topics
+  knowledgeBases?: string[];
+  customKnowledge?: string[];
   displayOrder?: number;
-  model?: string; // Optional model override
+  model?: string;
+  chatLength?: ChatLength; // New property for controlling response length
 }
 
 export interface PersonaConfig {

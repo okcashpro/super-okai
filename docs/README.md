@@ -13,6 +13,7 @@ Welcome to the OKai Support AI framework documentation! This guide explains how 
 2. [Personas](#personas)
    - [Structure](#persona-structure)
    - [Components](#persona-components)
+   - [Chat Length Modes](#chat-length-modes)
    - [Example](#persona-example)
 3. [Best Practices](#best-practices)
    - [Knowledge Base Design](#knowledge-base-design)
@@ -118,12 +119,6 @@ const knowledge: KnowledgeBase = {
         question: "How do I create a wallet?",
         answer: "To create a wallet: 1) Download the official wallet app 2) Click 'New Wallet' 3) Follow the security setup steps"
       }
-    ],
-    staking: [
-      {
-        question: "How can I stake my coins?",
-        answer: "To stake: 1) Open your wallet 2) Go to staking section 3) Choose amount 4) Confirm stake"
-      }
     ]
   }
 };
@@ -147,6 +142,8 @@ const persona: AIPersona = {
   knowledgeBases?: string[]; // Knowledge bases to access
   customKnowledge?: string[]; // Additional specific knowledge
   displayOrder?: number;  // Optional display order in UI
+  model?: string;        // Optional model override
+  chatLength?: 'short' | 'normal' | 'long'; // Response length mode
 };
 
 export default persona;
@@ -160,6 +157,38 @@ export default persona;
 4. **Knowledge Bases**: Array of knowledge base names to access
 5. **Custom Knowledge**: Additional specific knowledge topics
 6. **Display Order**: Optional UI ordering (lower numbers appear first)
+7. **Model**: Optional AI model override
+8. **Chat Length**: Controls response verbosity
+
+### Chat Length Modes
+
+Personas support three response length modes:
+
+1. **Short Mode**:
+   - Concise, to-the-point responses
+   - 1-2 sentences for simple queries
+   - Focused on direct answers
+   - Best for quick information
+
+2. **Normal Mode** (Default):
+   - Balanced response length
+   - 2-4 paragraphs for complex topics
+   - Includes relevant context
+   - Suitable for most interactions
+
+3. **Long Mode**:
+   - Detailed, comprehensive responses
+   - Extended explanations
+   - Additional examples and context
+   - Best for in-depth learning
+
+Configure chat length in the persona definition:
+```typescript
+const persona: AIPersona = {
+  // ... other properties
+  chatLength: 'normal' // 'short' | 'normal' | 'long'
+};
+```
 
 ### Persona Example
 
@@ -169,14 +198,18 @@ const persona: AIPersona = {
   description: "Friendly technical expert who explains complex concepts simply",
   systemPrompt: `You are a tech expert who loves making complex topics 
     accessible. Use analogies and real-world examples. Be friendly but 
-    professional. Focus on clarity and practical applications.`,
+    professional. Focus on clarity and practical applications.
+    
+    Response Length: Keep responses normal length, typically 2-3 paragraphs 
+    when explaining technical concepts.`,
   knowledgeBases: ['technology', 'programming'],
   customKnowledge: [
     "Software development",
     "System architecture",
     "DevOps practices"
   ],
-  displayOrder: 1
+  displayOrder: 1,
+  chatLength: 'normal'
 };
 ```
 
@@ -207,6 +240,7 @@ const persona: AIPersona = {
    - Define clear character traits
    - Maintain consistent communication style
    - Balance expertise with accessibility
+   - Configure appropriate chat length
 
 2. **Knowledge Integration**:
    - Choose relevant knowledge bases

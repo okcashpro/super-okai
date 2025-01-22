@@ -22,6 +22,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [configError, setConfigError] = useState<string | null>(null);
   const [lastMessageIndex, setLastMessageIndex] = useState<number>(-1);
+  const [feedback, setFeedback] = useState<string | null>(null);
   const { currentPersona, changePersona, availablePersonas } = usePersona();
   const chatFocus = useChatFocusProvider();
   const { scrollContainerRef, messagesEndRef, handleContentUpdate } = 
@@ -41,6 +42,14 @@ export default function App() {
     }
   }, []);
 
+  // Clear feedback after 3 seconds
+  useEffect(() => {
+    if (feedback) {
+      const timer = setTimeout(() => setFeedback(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [feedback]);
+
   const handlePersonaChange = useCallback((personaKey: string) => {
     // Save current conversation before changing
     conversationStore.saveConversation(currentPersona.name, messages);
@@ -52,7 +61,13 @@ export default function App() {
     setMessages([]);
     setLastMessageIndex(-1);
     conversationStore.clearConversation(currentPersona.name);
+    setFeedback('Chat cleared successfully');
   }, [currentPersona.name]);
+
+  const handleClearLogs = useCallback(() => {
+    fileLogger.clearAllLogs();
+    setFeedback('All logs cleared successfully');
+  }, []);
 
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = { id: uuidv4(), role: 'user', content };
@@ -101,17 +116,7 @@ export default function App() {
       <div className="flex flex-col h-full bg-gray-900">
         <header className="flex-none p-4 border-b border-gray-800">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handleClearConversation}
-                className="flex items-center gap-2 px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                title="Clear current conversation"
-              >
-                <Trash2 className="h-4 w-4" />
-                Clear Chat
-              </button>
-              <h1 className="text-xl font-bold text-white">Super Okai</h1>
-            </div>
+            <h1 className="text-xl font-bold text-white">Super Okai</h1>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => fileLogger.downloadAllLogs()}
@@ -121,7 +126,7 @@ export default function App() {
                 Download Logs
               </button>
               <button
-                onClick={() => fileLogger.clearAllLogs()}
+                onClick={handleClearLogs}
                 className="flex items-center gap-2 px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
                 title="Clear all conversation logs"
               >
@@ -130,10 +135,14 @@ export default function App() {
               </button>
             </div>
           </div>
-          {configError && (
-            <div className="mt-2 p-3 bg-red-900/50 border border-red-500 rounded-lg flex items-center gap-2 text-red-200">
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
-              <p className="text-sm">{configError}</p>
+          {(configError || feedback) && (
+            <div className={`mt-2 p-3 rounded-lg flex items-center gap-2 ${
+              configError 
+                ? "bg-red-900/50 border border-red-500 text-red-200"
+                : "bg-green-900/50 border border-green-500 text-green-200"
+            }`}>
+              {configError && <AlertCircle className="h-5 w-5 flex-shrink-0" />}
+              <p className="text-sm">{configError || feedback}</p>
             </div>
           )}
         </header>
@@ -172,7 +181,11 @@ export default function App() {
 
         <footer className="flex-none border-t border-gray-800">
           <div className="max-w-4xl mx-auto w-full">
-            <ChatInput onSend={handleSendMessage} disabled={isLoading || !!configError} />
+            <ChatInput 
+              onSend={handleSendMessage} 
+              onClear={handleClearConversation}
+              disabled={isLoading || !!configError} 
+            />
             <div className="px-4 pb-2 flex justify-between items-center text-xs text-gray-500">
               <span>
                 <a href="https://super-okai.github.io" className="hover:text-blue-400 transition-colors">Super Okai</a>
