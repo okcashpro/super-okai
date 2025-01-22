@@ -7,6 +7,7 @@ interface ChatMessageProps {
   message: Message;
   isTyping?: boolean;
   shouldAnimate?: boolean;
+  isLoadedMessage?: boolean; // New prop to identify loaded messages
   onContentUpdate?: () => void;
   onAnimationComplete?: () => void;
 }
@@ -15,6 +16,7 @@ export function ChatMessage({
   message, 
   isTyping = false, 
   shouldAnimate = false,
+  isLoadedMessage = false, // Default to false for new messages
   onContentUpdate,
   onAnimationComplete 
 }: ChatMessageProps) {
@@ -24,7 +26,7 @@ export function ChatMessage({
   const animationRef = useRef<number>();
   
   useEffect(() => {
-    if (isUser || !shouldAnimate) {
+    if (isUser || !shouldAnimate || isLoadedMessage) {
       setDisplayedContent(message.content);
       onAnimationComplete?.();
       return;
@@ -56,7 +58,7 @@ export function ChatMessage({
       }
       setIsAnimating(false);
     };
-  }, [isUser, message.content, shouldAnimate, onContentUpdate, onAnimationComplete]);
+  }, [isUser, message.content, shouldAnimate, isLoadedMessage, onContentUpdate, onAnimationComplete]);
 
   const htmlContent = marked(displayedContent, { breaks: true });
   

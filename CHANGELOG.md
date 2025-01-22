@@ -5,7 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.3-beta] - 2024-03-20
+## [1.0.4-beta] - 2025-01-21
+
+### Added
+- Conversation persistence per persona
+  - Conversations are now saved separately for each persona
+  - Conversations persist across persona changes
+  - Added conversation store with localStorage backend
+  - Added clear conversation button
+  - Auto-save conversations when switching personas
+  - Load previous conversations when returning to a persona
+
+### Changed
+- Updated UI layout to include clear conversation button
+- Improved conversation management system
+- Enhanced error handling for storage operations
+
+## [1.0.3-beta] - 2025-01-21
+
+### Added
+- Browser-based conversation logging system
+  - Added localStorage-based conversation storage
+  - Automatic cleanup of old logs (30 days)
+  - Download functionality for all logs as text file
+  - Storage quota management
+  - Maximum log limit to prevent excessive storage usage
+  - Formatted log content with clear message separation
+  - Added timestamp and conversation ID to logs
 
 ### Changed
 - Renamed project from "OKai-S" to "Super Okai" across all files and documentation
@@ -26,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved error handling for storage operations
   - Added methods to clear all limits
 
-## [1.0.2-beta] - 2024-03-20
+## [1.0.2-beta] - 2024-12-20
 
 ### Added
 - Enhanced test coverage with comprehensive test suites
@@ -46,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test environment configuration
 - Security validation checks
 
-## [1.0.1-beta] - 2024-03-20
+## [1.0.1-beta] - 2024-12-20
 
 ### Added
 - Improved message validation with stronger type checking
@@ -64,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Knowledge base pattern matching accuracy
 - Response formatting consistency
 
-## [1.0.0] - 2024-03-20
+## [1.0.0] - 2024-12-20
 
 ### Added
 - Production-ready release with comprehensive features

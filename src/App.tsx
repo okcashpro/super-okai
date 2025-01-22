@@ -7,11 +7,13 @@ import { useChatFocusProvider, ChatFocusContext } from './hooks/useChatFocus';
 import { useKnowledgeReload } from './hooks/useKnowledgeReload';
 import { useChatScroll } from './hooks/useChatScroll';
 import { sendMessage } from './api';
-import { Github, AlertCircle } from 'lucide-react';
+import { Github, AlertCircle, Download, Trash2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import type { Message } from './types';
 import { APIError } from './utils/errors';
 import { config } from './config/env';
+import { fileLogger } from './utils/fileLogger';
+import { conversationStore } from './utils/conversationStore';
 
 export default function App() {
   useKnowledgeReload();
@@ -19,10 +21,18 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [configError, setConfigError] = useState<string | null>(null);
+  const [lastMessageIndex, setLastMessageIndex] = useState<number>(-1);
   const { currentPersona, changePersona, availablePersonas } = usePersona();
   const chatFocus = useChatFocusProvider();
   const { scrollContainerRef, messagesEndRef, handleContentUpdate } = 
     useChatScroll({ messages, isTyping: isLoading });
+
+  // Load conversation when persona changes
+  useEffect(() => {
+    const savedMessages = conversationStore.getConversation(currentPersona.name);
+    setMessages(savedMessages);
+    setLastMessageIndex(savedMessages.length - 1); // Set last message index for loaded messages
+  }, [currentPersona.name]);
 
   // Check configuration on mount
   useEffect(() => {
@@ -32,13 +42,21 @@ export default function App() {
   }, []);
 
   const handlePersonaChange = useCallback((personaKey: string) => {
+    // Save current conversation before changing
+    conversationStore.saveConversation(currentPersona.name, messages);
     changePersona(personaKey);
-    setMessages([]);
     chatFocus.focusInput();
-  }, [changePersona, chatFocus]);
+  }, [changePersona, chatFocus, currentPersona.name, messages]);
+
+  const handleClearConversation = useCallback(() => {
+    setMessages([]);
+    setLastMessageIndex(-1);
+    conversationStore.clearConversation(currentPersona.name);
+  }, [currentPersona.name]);
 
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = { id: uuidv4(), role: 'user', content };
+    setLastMessageIndex(messages.length - 1); // Set last message index before adding new messages
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
@@ -47,11 +65,17 @@ export default function App() {
       const response = await sendMessage(apiMessages, currentPersona);
       
       if (response) {
-        setMessages(prev => [...prev, {
+        const assistantMessage = {
           id: uuidv4(),
           role: 'assistant',
           content: response.content || 'Sorry, I could not generate a response.'
-        }]);
+        };
+        
+        const newMessages = [...messages, userMessage, assistantMessage];
+        setMessages(newMessages);
+        // Save conversation and log it
+        conversationStore.saveConversation(currentPersona.name, newMessages);
+        fileLogger.logConversation(newMessages, currentPersona.name);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -76,7 +100,36 @@ export default function App() {
     <ChatFocusContext.Provider value={chatFocus}>
       <div className="flex flex-col h-full bg-gray-900">
         <header className="flex-none p-4 border-b border-gray-800">
-          <h1 className="text-xl font-bold text-white text-center">Super Okai</h1>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleClearConversation}
+                className="flex items-center gap-2 px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                title="Clear current conversation"
+              >
+                <Trash2 className="h-4 w-4" />
+                Clear Chat
+              </button>
+              <h1 className="text-xl font-bold text-white">Super Okai</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => fileLogger.downloadAllLogs()}
+                className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                <Download className="h-4 w-4" />
+                Download Logs
+              </button>
+              <button
+                onClick={() => fileLogger.clearAllLogs()}
+                className="flex items-center gap-2 px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                title="Clear all conversation logs"
+              >
+                <Trash2 className="h-4 w-4" />
+                Clear Logs
+              </button>
+            </div>
+          </div>
           {configError && (
             <div className="mt-2 p-3 bg-red-900/50 border border-red-500 rounded-lg flex items-center gap-2 text-red-200">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -94,12 +147,13 @@ export default function App() {
                 </div>
               ) : (
                 <div className="space-y-4 py-4">
-                  {messages.map((message) => (
+                  {messages.map((message, index) => (
                     <ChatMessage 
                       key={message.id}
                       message={message}
                       isTyping={isLoading && message === messages[messages.length - 1]}
                       shouldAnimate={message.role === 'assistant'}
+                      isLoadedMessage={index <= lastMessageIndex}
                       onContentUpdate={handleContentUpdate}
                     />
                   ))}
