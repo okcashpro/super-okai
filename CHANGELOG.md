@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3-beta] - 2024-03-20
+
+### Changed
+- Renamed project from "OKai-S" to "Super Okai" across all files and documentation
+- Updated all repository links and references to reflect new name
+
+### Fixed
+- Cache implementation now properly handles entry expiration
+  - Added automatic cleanup interval (runs every minute)
+  - Added destroy() method to clean up intervals
+  - Added getStats() method for monitoring
+  - Improved entry expiration checks
+  - Added proper cleanup of expired entries
+- Rate limiter now persists limits across sessions
+  - Added localStorage persistence
+  - Added automatic saving every 30 seconds
+  - Added cleanup of expired limits every minute
+  - Added stats monitoring
+  - Improved error handling for storage operations
+  - Added methods to clear all limits
+
 ## [1.0.2-beta] - 2024-03-20
 
 ### Added

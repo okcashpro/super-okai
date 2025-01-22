@@ -1,12 +1,12 @@
-# OKai-S: The Ultimate AI Support Framework 🤖✨
+# Super Okai: The Ultimate AI Support Framework 🤖✨
 
-Welcome to **OKai-S**, a cutting-edge AI-powered framework built by OK Devs to revolutionize user support and engagement. OKai-S combines the power of artificial intelligence with modular design and customizable personas, enabling projects to deliver scalable, intelligent, and engaging 24/7 support.
+Welcome to **Super Okai**, a cutting-edge AI-powered framework built by OK Devs to revolutionize user support and engagement. Super Okai combines the power of artificial intelligence with modular design and customizable personas, enabling projects to deliver scalable, intelligent, and engaging 24/7 support.
 
 ---
 
 ## 🌟 Overview
 
-**OKai-S** is designed to transform traditional support systems into dynamic, intelligent, and context-aware solutions. By leveraging advanced AI and a user-friendly interface, it provides an unparalleled experience for both developers and end-users.
+**Super Okai** is designed to transform traditional support systems into dynamic, intelligent, and context-aware solutions. By leveraging advanced AI and a user-friendly interface, it provides an unparalleled experience for both developers and end-users.
 
 ### Key Features
 
@@ -43,7 +43,7 @@ Welcome to **OKai-S**, a cutting-edge AI-powered framework built by OK Devs to r
 
 ## 🌍 Market Disruption
 
-**OKai-S** redefines user support by:
+**Super Okai** redefines user support by:
 
 - **Eliminating Wait Times**: Provide instant, expert support 24/7.
 - **Reducing Costs**: Scale support without proportional cost increases.
@@ -57,8 +57,8 @@ Welcome to **OKai-S**, a cutting-edge AI-powered framework built by OK Devs to r
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/okcashpro/okai-s
-   cd okai-s
+   git clone https://github.com/okcashpro/super-okai
+   cd super-okai
    ```
 2. Install dependencies:
    ```bash
@@ -85,17 +85,16 @@ We are building the future of AI-powered support, and we want you to be part of 
 
 ---
 
-### 🌟 Join the OKai Community
+### 🌟 Join the Super Okai Community
 Be part of the Web3 and AI revolution with OK! Connect with us:
 
-- 🌐 [OKai S Website](https://okai-s.github.io/)
-- 🌐 [OKai Core Website](https://okai.github.io/okai/)
+- 🌐 [Super Okai Website](https://super-okai.github.io/)
 - 🌐 [OK Website](https://okcash.org)
 - 💬 [Discord](https://discord.gg/grvpc8c)
 - 🐦 [Twitter](https://twitter.com/oktokencash)
 - 📱 [Telegram](https://t.me/ok_heroes)
 
-Let’s build the future together. 🚀
+Let's build the future together. 🚀
 
 ---
 

@@ -76,7 +76,7 @@ export default function App() {
     <ChatFocusContext.Provider value={chatFocus}>
       <div className="flex flex-col h-full bg-gray-900">
         <header className="flex-none p-4 border-b border-gray-800">
-          <h1 className="text-xl font-bold text-white text-center">OKai S</h1>
+          <h1 className="text-xl font-bold text-white text-center">Super Okai</h1>
           {configError && (
             <div className="mt-2 p-3 bg-red-900/50 border border-red-500 rounded-lg flex items-center gap-2 text-red-200">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -121,13 +121,13 @@ export default function App() {
             <ChatInput onSend={handleSendMessage} disabled={isLoading || !!configError} />
             <div className="px-4 pb-2 flex justify-between items-center text-xs text-gray-500">
               <span>
-                <a href="https://okai-s.github.io" className="hover:text-blue-400 transition-colors">OKai-S</a>
+                <a href="https://super-okai.github.io" className="hover:text-blue-400 transition-colors">Super Okai</a>
                 {' '}by{' '}
                 <a href="https://okcash.org" className="hover:text-blue-400 transition-colors">OK</a>
                 {' '}© 2025
               </span>
               <a
-                href="https://github.com/ok-devs/okai-s"
+                href="https://github.com/ok-devs/super-okai"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors text-xs mr-5"
